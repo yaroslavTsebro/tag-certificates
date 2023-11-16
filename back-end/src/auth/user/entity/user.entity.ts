@@ -1,5 +1,7 @@
 import { BaseEntity } from '@app/common';
-import { Column, Entity, JoinColumn } from 'typeorm';
+import GiftCertificate from 'src/gift-certificate/entity/gift-certificate.entity';
+import Tag from 'src/tag/entity/tag.entity';
+import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import Token from '../../token/entity/token.entity';
 
 export enum UserRole {
@@ -27,6 +29,15 @@ class User extends BaseEntity<User> {
 
   @JoinColumn()
   token: Token;
+
+  @OneToMany(
+    () => GiftCertificate,
+    (giftCertificate) => giftCertificate.creator,
+  )
+  giftCertificates: GiftCertificate[];
+
+  @OneToMany(() => Tag, (tag) => tag.creator)
+  tags: Tag[];
 }
 
 export default User;
