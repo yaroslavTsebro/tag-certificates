@@ -8,8 +8,8 @@ class GiftCertificate extends BaseEntity<GiftCertificate> {
   @Column({ length: 60, unique: true })
   code: string;
 
-  @ManyToOne(() => User, (user) => user.giftCertificates)
-  creator: User;
+  @ManyToOne(() => User, (user) => user.giftCertificates, { lazy: true })
+  creator: Promise<User>;
 
   @Column()
   maximumUsage: number;
