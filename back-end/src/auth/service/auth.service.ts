@@ -86,7 +86,9 @@ export class AuthService {
   async register(dto: CreateUserDto): Promise<{ user: User; tokens: Tokens }> {
     try {
       const user = await this.usersService.create(dto);
-      if (!user) throw new BadRequestException('An Error occured');
+      if (!user)
+        throw new BadRequestException('An Error occured during creating user');
+
       const tokens = await this.getTokens(user);
       return { user, tokens };
     } catch (error) {

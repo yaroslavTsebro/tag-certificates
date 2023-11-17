@@ -5,9 +5,14 @@ import { GiftCertificateService } from './service/gift-certificate.service';
 import { GIFT_CERTIFICATE_SERVICE } from './service/gift-certificate-service.interface';
 import { GiftCertificateRepository } from './repository/gift-certificate.repository';
 import { GiftCertificateController } from './controller/gift-certificate.controller';
+import { TagModule } from 'src/tag/tag.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GiftCertificate]), TypeOrmModule],
+  imports: [
+    TypeOrmModule.forFeature([GiftCertificate]),
+    TypeOrmModule,
+    TagModule,
+  ],
   providers: [
     {
       useClass: GiftCertificateService,

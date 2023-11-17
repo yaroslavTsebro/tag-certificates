@@ -7,7 +7,7 @@ import { ITokenService } from './token-service.interface';
 import { TokenDto } from '../entity/dto/create-token.dto';
 import Token from '../entity/token.entity';
 import { TokenRepository } from '../repository/token.repository';
-import User from 'src/user/entity/user.entity';
+import User from 'src/auth/user/entity/user.entity';
 
 @Injectable()
 export class TokenService implements ITokenService {

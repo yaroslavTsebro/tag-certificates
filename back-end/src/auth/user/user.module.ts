@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './controller/users.controller';
 import { UsersService } from './service/users.service';
 import { USER_SERVICE } from './service/users-service.interface';
 import { UsersRepository } from './repository/users.repository';
@@ -15,7 +14,6 @@ import User from './entity/user.entity';
     },
     UsersRepository,
   ],
-  controllers: [UsersController],
   exports: [
     {
       useClass: UsersService,

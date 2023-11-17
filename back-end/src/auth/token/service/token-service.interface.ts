@@ -1,4 +1,4 @@
-import User from 'src/user/entity/user.entity';
+import User from 'src/auth/user/entity/user.entity';
 import { TokenDto } from '../entity/dto/create-token.dto';
 import Token from '../entity/token.entity';
 

@@ -18,7 +18,7 @@ import { CreateUserDto } from '../user/entity/dto/create-user.dto';
 import { ChangeUsernameDto } from '../user/entity/dto/change-username.dto';
 import { CurrentUser } from '@app/common';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly configService: ConfigService,
