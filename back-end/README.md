@@ -9,7 +9,7 @@
 8.class-transform\
 9.Joi(for configs)\
 10.Docker\
-11.Swagger(decided to choose plugin for nest.js, instead of manually inserting data)\
+11.Swagger(decided to choose plugin for nest.js, instead of manually inserting data)
 
 ## How to setup
 1.Config `docker-compose.yaml`\
