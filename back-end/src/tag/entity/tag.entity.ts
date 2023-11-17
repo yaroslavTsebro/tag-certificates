@@ -8,11 +8,15 @@ class Tag extends BaseEntity<Tag> {
   @Column({ length: 60, unique: true })
   name: string;
 
-  @ManyToMany(() => GiftCertificate, (certificate) => certificate.tags)
-  giftCertificates: GiftCertificate[];
+  @ManyToMany(() => GiftCertificate, (certificate) => certificate.tags, {
+    lazy: true,
+  })
+  giftCertificates: Promise<GiftCertificate[]>;
 
-  @ManyToOne(() => User, (user) => user.tags)
-  creator: User;
+  @ManyToOne(() => User, (user) => user.tags, {
+    lazy: true,
+  })
+  creator: Promise<User>;
 }
 
 export default Tag;
