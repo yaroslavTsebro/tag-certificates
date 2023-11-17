@@ -1,18 +1,18 @@
 ## Tech Stack
-# Nest.js
-# Express
-# TypeORM
-# Pino(http also)
-# Passport
-# JWT(2 tokens)
-# class-validator
-# class-transform
-# Joi(for configs)
-# Docker
-# Swagger(decided to choose plugin for nest.js, instead of manually inserting data)
+1.Nest.js
+2.Express
+3.TypeORM
+4.Pino(http also)
+5.Passport
+6.JWT(2 tokens)
+7.class-validator
+8.class-transform
+9.Joi(for configs)
+10.Docker
+11.Swagger(decided to choose plugin for nest.js, instead of manually inserting data)
 
 ## How to setup
-# Config docker-compose.yaml
-# Config .env
-# In terminal: ```docker-compose up ```
-# Enjoi the app
+1.Config docker-compose.yaml
+2.Config .env
+3.In terminal: ```docker-compose up ```
+4.Enjoi the app
