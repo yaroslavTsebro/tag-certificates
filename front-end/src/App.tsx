@@ -1,5 +1,9 @@
+import { Login } from "./components/Login/Login";
+
 function App() {
-  return <div>Something</div>;
+  return (
+    <Login isLogin={false}/>
+  );
 }
 
 export default App;
