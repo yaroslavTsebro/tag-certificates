@@ -34,6 +34,7 @@ export class AuthController {
     const tokens = await this.authService.getTokens(user);
 
     this.addTokensToCookies(response, tokens);
+    user.token = null;
     response.send(user);
   }
 
@@ -45,6 +46,7 @@ export class AuthController {
     const result = await this.authService.register(user);
 
     this.addTokensToCookies(response, result.tokens);
+    result.user.token = null;
     response.send(result.user);
   }
 
@@ -56,12 +58,14 @@ export class AuthController {
   ) {
     await this.authService.logout(user);
     this.removeTokensToCookies(response);
+    user.token = null;
     return user;
   }
 
   @Get('profile')
   @UseGuards(AccessTokenGuard)
   async profile(@CurrentUser() user: User) {
+    user.token = null;
     return user;
   }
 
@@ -74,6 +78,7 @@ export class AuthController {
     const tokens = await this.authService.getTokens(user);
 
     this.addTokensToCookies(response, tokens);
+    user.token = null;
     response.send(user);
   }
 

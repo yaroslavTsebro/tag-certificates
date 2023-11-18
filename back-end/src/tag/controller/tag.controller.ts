@@ -52,8 +52,11 @@ export class TagController {
     return await this.tagService.delete(id);
   }
 
-  @Put()
-  async update(@Body() dto: UpdateTagDto, id: number): Promise<Tag> {
+  @Put(':id')
+  async update(
+    @Body() dto: UpdateTagDto,
+    @Param('id') id: number,
+  ): Promise<Tag> {
     return await this.tagService.update(dto, id);
   }
 }
