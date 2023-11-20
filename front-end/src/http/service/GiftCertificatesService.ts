@@ -15,6 +15,10 @@ export default class GiftCertificateService {
     return $api.get<GiftCertificate>(`/gift-certificate/${id}`);
   }
 
+  static async getAll(): Promise<AxiosResponse<GiftCertificate[]>> {
+    return $api.get<GiftCertificate[]>(`gift-certificate`);
+  }
+
   static async getByCode(
     code: string
   ): Promise<AxiosResponse<GiftCertificate[]>> {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { User } from "../types/user/User";
+import UserService from "./service/UserService";
 
 export const API_URL = `http://localhost:3000/`;
 
@@ -21,7 +21,7 @@ $api.interceptors.response.use(
     ) {
       originalRequest._isRetry = true;
       try {
-        await axios.get<User>(`${API_URL}/auth/refresh`, { withCredentials: true });
+        await UserService.refresh();
         return $api.request(originalRequest);
       } catch (e) {
         throw new Error(`Unauthorized`);

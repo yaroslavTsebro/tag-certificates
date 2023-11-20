@@ -34,4 +34,8 @@ export default class UserService {
   static async delete(): Promise<AxiosResponse<User>> {
     return $api.delete<User>("/auth");
   }
+
+  static async refresh(): Promise<AxiosResponse<User>> {
+    return $api.post<User>("/auth/refresh");
+  }
 }
