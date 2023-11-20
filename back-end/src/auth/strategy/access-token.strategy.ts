@@ -14,21 +14,17 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: any) => {
-          console.log(request?.cookies?.Authentication);
-          return (
-            request?.cookies?.Authentication ||
-            request?.Authentication ||
-            request?.headers.Authentication
-          );
-        },
+        (request: any) =>
+          request?.cookies?.Authentication ||
+          request?.Authentication ||
+          request?.headers.Authentication,
       ]),
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+      ignoreExpiration: false,
+      secretOrKey: configService.get('JWT_ACCESS_SECRET'),
     });
   }
 
   validate(payload: AccessTokenPayload): Promise<User> {
-    console.log(payload);
     return this.authService.getById(payload.id);
   }
 }

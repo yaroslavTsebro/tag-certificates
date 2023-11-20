@@ -26,7 +26,7 @@ export class TokenService implements ITokenService {
   }
 
   async delete(id: number): Promise<void> {
-    await this.tokenRepository.findOneAndDelete({ id });
+    await this.tokenRepository.findOneAndDelete({ user: { id: id } });
   }
 
   async create(dto: TokenDto, user: User): Promise<Token> {
