@@ -39,6 +39,11 @@ export class GiftCertificateController {
     return await this.giftCertificateService.getByCode(code);
   }
 
+  @Get()
+  async getAll(): Promise<GiftCertificate[]> {
+    return await this.giftCertificateService.getAll();
+  }
+
   @Get(':id')
   async getById(@Param('id') id: number): Promise<GiftCertificate> {
     return await this.giftCertificateService.getById(id);
