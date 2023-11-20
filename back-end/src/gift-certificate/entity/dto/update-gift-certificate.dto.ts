@@ -15,8 +15,7 @@ export class UpdateGiftCertificateDto {
    * @example ['shopping', 'food', 'drinks']
    */
   @IsOptional()
-  @IsString()
   @IsArray()
-  @Min(1)
+  @IsString({ each: true, message: 'Each tag must be a string', always: true })
   tags?: string[];
 }

@@ -1,4 +1,11 @@
-import { IsArray, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  Length,
+  Min,
+} from 'class-validator';
 
 export class CreateGiftCertificateDto {
   /**
@@ -7,7 +14,7 @@ export class CreateGiftCertificateDto {
    */
   @IsOptional()
   @IsString()
-  @Min(8)
+  @Length(8)
   code?: string;
 
   /**
@@ -23,8 +30,7 @@ export class CreateGiftCertificateDto {
    * @example ['shopping', 'food', 'drinks']
    */
   @IsOptional()
-  @IsString()
   @IsArray()
-  @Min(1)
+  @IsString({ each: true, message: 'Each tag must be a string', always: true })
   tags?: string[];
 }
