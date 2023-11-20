@@ -1,4 +1,10 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -23,23 +29,54 @@ export class AuthService {
     private readonly configService: ConfigService,
     @Inject(USER_SERVICE) private readonly usersService: IUsersService,
     @Inject(TOKEN_SERVICE) private readonly tokenService: ITokenService,
-    private readonly jwtService: JwtService,
+    @Inject('JwtAccessTokenService')
+    private readonly accessTokenService: JwtService,
+    @Inject('JwtRefreshTokenService')
+    private readonly refreshTokenService: JwtService,
   ) {}
 
   async changeUsername(user: User, dto: ChangeUsernameDto) {
-    return await this.usersService.changeUsername(user.id, dto.username);
+    try {
+      return await this.usersService.changeUsername(user.id, dto.username);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant change username`);
+    }
   }
 
   async delete(user: User) {
-    return await this.usersService.delete(user.id);
+    try {
+      return await this.usersService.delete(user.id);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant delete user`);
+    }
   }
 
   async logout(user: User) {
-    await this.tokenService.delete(user.id);
+    try {
+      await this.tokenService.delete(user.id);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant logout`);
+    }
   }
 
   async getById(userId: number): Promise<User> {
-    return this.usersService.getById(userId);
+    try {
+      return this.usersService.getById(userId);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant get user by id`);
+    }
   }
 
   async getTokens(user: User): Promise<Tokens> {
@@ -52,24 +89,12 @@ export class AuthService {
         id: user.id,
       };
 
-      const expires = new Date();
-      expires.setSeconds(
-        expires.getSeconds() + this.configService.get('JWT_ACCESS_EXPIRATION'),
-      );
-
-      const accessToken = this.jwtService.sign(accessTokenPayload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      const accessToken = this.accessTokenService.sign(accessTokenPayload, {
         subject: user.id.toString(),
-        expiresIn: expires.getSeconds(),
       });
 
-      expires.setSeconds(
-        expires.getSeconds() + this.configService.get('JWT_REFRESH_EXPIRATION'),
-      );
-      const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      const refreshToken = this.refreshTokenService.sign(refreshTokenPayload, {
         subject: user.id.toString(),
-        expiresIn: expires.getSeconds(),
       });
 
       await this.tokenService.createOrUpdate(
@@ -91,8 +116,11 @@ export class AuthService {
 
       const tokens = await this.getTokens(user);
       return { user, tokens };
-    } catch (error) {
-      throw error;
+    } catch (e) {
+      if (e instanceof BadRequestException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant register user`);
     }
   }
 
@@ -100,7 +128,14 @@ export class AuthService {
     refreshToken: string,
     id: number,
   ): Promise<User> {
-    const token = this.tokenService.getByUserIdAndToken(id, refreshToken);
-    return (await token).user;
+    try {
+      const token = this.tokenService.getByUserIdAndToken(id, refreshToken);
+      return (await token).user;
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant get user by token`);
+    }
   }
 }
