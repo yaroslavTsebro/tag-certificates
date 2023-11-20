@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import GiftCertificate from '../entity/gift-certificate.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -29,6 +30,31 @@ export class GiftCertificateRepository extends TypeOrmAbstractRepository<GiftCer
     }
   }
 
+  async create(entity: GiftCertificate): Promise<GiftCertificate> {
+    return this.entityManager.save(new GiftCertificate({ ...entity }));
+  }
+
+  async findAll(): Promise<GiftCertificate[]> {
+    try {
+      return await this.itemsRepository.find({ relations: ['tags'] });
+    } catch (error) {
+      this.logger.warn('Cant find such certificates');
+      throw new InternalServerErrorException(`Cant find this certificates`);
+    }
+  }
+
+  async findAndUpdate(entity: GiftCertificate) {
+    const updateResult = await this.itemsRepository.save(entity, {
+      reload: true,
+    });
+
+    if (!updateResult) {
+      throw new NotFoundException('Entity wasnt update.');
+    }
+
+    return updateResult;
+  }
+
   async findByCode(code: string): Promise<GiftCertificate | null> {
     try {
       return await this.itemsRepository.findOneBy({ code });
@@ -39,15 +65,6 @@ export class GiftCertificateRepository extends TypeOrmAbstractRepository<GiftCer
   }
 
   async deleteById(id: number): Promise<number> {
-    try {
-      return (await this.itemsRepository.delete({ id })).affected;
-    } catch (error) {
-      this.logger.warn('Cant delete such certificate by id: ', id);
-      throw new InternalServerErrorException(`Cant delete this certificate`);
-    }
-  }
-
-  async update(id: number): Promise<number> {
     try {
       return (await this.itemsRepository.delete({ id })).affected;
     } catch (error) {
