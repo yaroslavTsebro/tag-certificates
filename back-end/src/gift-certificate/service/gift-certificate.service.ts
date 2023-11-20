@@ -1,12 +1,12 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IGiftCertificateService } from './gift-certificate-service.interface';
-import { GiftCertificateRepository } from '../repository/gift-certificate.repository';
+import User from 'src/auth/user/entity/user.entity';
+import { TagRepository } from 'src/tag/repository/tag.repository';
+import { v4 as uuid } from 'uuid';
 import { CreateGiftCertificateDto } from '../entity/dto/create-gift-certificate.dto';
 import { UpdateGiftCertificateDto } from '../entity/dto/update-gift-certificate.dto';
 import GiftCertificate from '../entity/gift-certificate.entity';
-import { v4 as uuid } from 'uuid';
-import { TagRepository } from 'src/tag/repository/tag.repository';
-import User from 'src/auth/user/entity/user.entity';
+import { GiftCertificateRepository } from '../repository/gift-certificate.repository';
+import { IGiftCertificateService } from './gift-certificate-service.interface';
 
 @Injectable()
 export class GiftCertificateService implements IGiftCertificateService {
@@ -23,11 +23,11 @@ export class GiftCertificateService implements IGiftCertificateService {
   ): Promise<GiftCertificate> {
     const certificate = new GiftCertificate({
       maximumUsage: dto.maximumUsage,
-      creator: user,
     });
+    certificate.creatorId = user.id;
     certificate.code = dto.code ? dto.code : uuid();
 
-    if (dto.tags) {
+    if (dto.tags.length > 0) {
       const existingTags = await this.tagRepository.bulkSearchByName(dto.tags);
 
       const existingTagNames = existingTags.map((tag) => tag.name);
@@ -37,9 +37,12 @@ export class GiftCertificateService implements IGiftCertificateService {
 
       let newTags;
       if (newTagNames.length > 0) {
-        newTags = await this.tagRepository.bulkCreate(newTagNames, user.id);
+        newTags = await this.tagRepository.bulkCreate(newTagNames, user);
+        console.log(newTags);
+        certificate.tags = [...existingTags, ...newTags];
+      } else {
+        certificate.tags = [...existingTags];
       }
-      certificate.tags = [...existingTags, ...newTags];
     }
 
     return this.giftCertificateRepository.create(certificate);
@@ -63,6 +66,10 @@ export class GiftCertificateService implements IGiftCertificateService {
     return await this.giftCertificateRepository.deleteById(id);
   }
 
+  async getAll(): Promise<GiftCertificate[]> {
+    return await this.giftCertificateRepository.findAll();
+  }
+
   async update(
     dto: UpdateGiftCertificateDto,
     id: number,
@@ -73,7 +80,10 @@ export class GiftCertificateService implements IGiftCertificateService {
     if (dto.maximumUsage) certificate.maximumUsage = dto.maximumUsage;
 
     if (dto.tags) {
-      const connectedTags = certificate.tags.map((tag) => tag.name);
+      let connectedTags = [];
+      if (certificate.tags && certificate.tags.length > 0) {
+        connectedTags = certificate?.tags.map((tag) => tag.name);
+      }
 
       const notConnected = dto.tags.filter(
         (tagName) => !connectedTags.includes(tagName),
@@ -89,15 +99,13 @@ export class GiftCertificateService implements IGiftCertificateService {
 
       let newTags;
       if (nonExistingTags.length > 0) {
-        newTags = await this.tagRepository.bulkCreate(nonExistingTags, user.id);
+        newTags = await this.tagRepository.bulkCreate(nonExistingTags, user);
+        console.log(newTags);
+        certificate.tags = [...existingTags, ...newTags];
+      } else {
+        certificate.tags = [...existingTags];
       }
-
-      certificate.tags = [...existingTags, ...newTags];
     }
-
-    return await this.giftCertificateRepository.findOneAndUpdate(
-      { id },
-      { ...certificate },
-    );
+    return await this.giftCertificateRepository.findAndUpdate(certificate);
   }
 }
