@@ -1,4 +1,4 @@
-import { BaseEntity } from '@app/common';
+import { PasswordOmitEntity } from '@app/common';
 import GiftCertificate from 'src/gift-certificate/entity/gift-certificate.entity';
 import Tag from 'src/tag/entity/tag.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
@@ -10,7 +10,7 @@ export enum UserRole {
 }
 
 @Entity()
-class User extends BaseEntity<User> {
+class User extends PasswordOmitEntity<User> {
   @Column({ length: 20, unique: true })
   username: string;
 
