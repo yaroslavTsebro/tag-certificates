@@ -1,7 +1,7 @@
 import { BaseEntity } from '@app/common';
 import User from 'src/auth/user/entity/user.entity';
 import GiftCertificate from 'src/gift-certificate/entity/gift-certificate.entity';
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 
 @Entity()
 class Tag extends BaseEntity<Tag> {
@@ -13,9 +13,13 @@ class Tag extends BaseEntity<Tag> {
   })
   giftCertificates: Promise<GiftCertificate[]>;
 
+  @Column({ nullable: true })
+  creatorId: number;
+
   @ManyToOne(() => User, (user) => user.tags, {
     lazy: true,
   })
+  @JoinColumn({ name: 'creatorId' })
   creator: Promise<User>;
 }
 

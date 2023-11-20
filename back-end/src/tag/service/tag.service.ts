@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { TagRepository } from '../repository/tag.repository';
 import { ITagService } from './tag-service.interface';
 import User from 'src/auth/user/entity/user.entity';
@@ -18,11 +18,21 @@ export class TagService implements ITagService {
   }
 
   async create(dto: CreateTagDto, user: User): Promise<Tag> {
-    return await this.tagRepository.createTag(dto, user.id);
+    return await this.tagRepository.create(
+      new Tag({
+        ...dto,
+        creator: Promise.resolve(user),
+      }),
+    );
   }
 
   async getById(id: number): Promise<Tag> {
-    return await this.tagRepository.getById(id);
+    const tag = await this.tagRepository.getById(id);
+    if (tag) {
+      return tag;
+    }
+
+    throw new NotFoundException('Tag wanst found');
   }
 
   async delete(id: number): Promise<number> {

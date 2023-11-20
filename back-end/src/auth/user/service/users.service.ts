@@ -32,7 +32,7 @@ export class UsersService implements IUsersService {
     const user = await this.usersRepository.findOneOrThrow({ email });
     const passwordIsValid = await bcrypt.compare(password, user.password);
 
-    if (!passwordIsValid) throw new UnauthorizedException('Wrong password');
+    if (!passwordIsValid) throw new UnauthorizedException('Wrong credentials');
 
     return user;
   }

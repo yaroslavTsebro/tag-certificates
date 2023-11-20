@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager, In, Like } from 'typeorm';
 import Tag from '../entity/tag.entity';
 import { CreateTagDto } from '../entity/dto/create-tag.dto';
+import User from 'src/auth/user/entity/user.entity';
 
 @Injectable()
 export class TagRepository extends TypeOrmAbstractRepository<Tag> {
@@ -40,13 +41,15 @@ export class TagRepository extends TypeOrmAbstractRepository<Tag> {
     }
   }
 
-  async bulkCreate(tagNames: string[], userId: number): Promise<Tag[]> {
+  async bulkCreate(tagNames: string[], user: User): Promise<Tag[]> {
     try {
-      const tags = tagNames.map((name) => ({ name: name, user: userId }));
-      return await this.itemsRepository.create(tags);
+      const tags = tagNames.map(
+        (name) => new Tag({ name: name, creatorId: user.id }),
+      );
+      return await this.entityManager.save(tags);
     } catch (e) {
-      this.logger.warn('Tags was not created with such data', tagNames, userId);
-      throw new InternalServerErrorException('Tags wasnt.');
+      this.logger.warn('Tags was not created with such data', tagNames);
+      throw new InternalServerErrorException('Tags wasnt created.');
     }
   }
 
@@ -54,7 +57,7 @@ export class TagRepository extends TypeOrmAbstractRepository<Tag> {
     try {
       return await this.itemsRepository.create({
         ...dto,
-        creator: { id: userId },
+        creator: { id: userId } as any,
       });
     } catch (e) {
       this.logger.warn('Tag was not created with such data', dto, userId);
@@ -62,9 +65,11 @@ export class TagRepository extends TypeOrmAbstractRepository<Tag> {
     }
   }
 
-  async getById(id: number): Promise<Tag> {
+  async getById(id: number): Promise<Tag | null> {
     try {
-      return await this.itemsRepository.findOneBy({ id: id });
+      return await this.itemsRepository.findOne({
+        where: { id },
+      });
     } catch (e) {
       this.logger.warn('Tag was not found with such data', id);
       throw new InternalServerErrorException('Tag was not found.');

@@ -1,4 +1,4 @@
-import { IsString, Min } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class UpdateTagDto {
   /**
@@ -6,6 +6,6 @@ export class UpdateTagDto {
    * @example 'shopping'
    */
   @IsString()
-  @Min(3)
+  @Length(3)
   name: string;
 }
