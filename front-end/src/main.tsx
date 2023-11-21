@@ -1,27 +1,33 @@
 import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./style/style.css";
+import "./style/style.scss";
 import Store from "./context/UserStore.ts";
+import { router } from "./routing/index.tsx";
+import { RouterProvider } from "react-router-dom";
+import GiftCertificateStore from "./context/CertificatesStore.ts";
 
 interface State {
-  store: Store;
+  user: Store;
+  certificates: GiftCertificateStore;
 }
 
-export const store = new Store();
+export const user = new Store();
+export const certificates = new GiftCertificateStore();
 
 export const Context = createContext<State>({
-  store,
+  user,
+  certificates,
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Context.Provider
       value={{
-        store,
+        user,
+        certificates,
       }}
     >
-      <App />
+      <RouterProvider router={router} />
     </Context.Provider>
   </React.StrictMode>
 );
