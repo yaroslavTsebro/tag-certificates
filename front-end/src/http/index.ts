@@ -2,6 +2,7 @@ import axios from "axios";
 import UserService from "./service/UserService";
 
 export const API_URL = `http://localhost:3000/`;
+export const CLEINT_URL = `http://localhost:5173/`;
 
 const $api = axios.create({
   withCredentials: true,

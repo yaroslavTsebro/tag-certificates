@@ -1,4 +1,5 @@
 import { GiftCertificate } from "../gift-certeficates/GiftCertificates";
+import { User } from "../user/User";
 
 export class Tag {
   id: number;
@@ -6,5 +7,6 @@ export class Tag {
   updatedAt: Date;
   name: string;
   giftCertificates?: GiftCertificate[];
-  creator: User | number;
+  creator: User;
+  creatorId: number;
 }
