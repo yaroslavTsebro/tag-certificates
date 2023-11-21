@@ -1,0 +1,51 @@
+// @import url("../../../style/variables.module");
+
+.container {
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
+
+
+.body {
+  padding: 30px;
+  border-radius: 15px;
+  background-color: #F2F2F2;
+}
+
+.top {
+  justify-content: space-between;
+}
+
+.bodyPart {
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}
+
+.code {
+  &:not(em) {
+    font-size: 20px;
+  }
+
+  em {
+    display: inline-block;
+    margin-left: 5px;
+  }
+}
+
+
+
+.center{
+  display: flex;
+  justify-content: space-between;
+}
+
+.tag{
+  margin-right: 4px;
+}
+
+.actions{
+  justify-content: center !important;
+  column-gap: 10px;
+}
