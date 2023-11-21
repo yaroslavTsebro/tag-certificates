@@ -1,0 +1,35 @@
+@import url('../../style/variables.module.scss');
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.body {
+  width: 900px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.button {
+  background-color: #7B61FF;
+  padding: 20px;
+  color: #FFF;
+  font-size: 20px;
+  border-radius: 15px;
+  width: 100%;
+  transition: background-color 0.3s ease-in-out;
+
+  &:disabled {
+    background-color: #9884fc;
+  }
+
+  &:hover {
+    background-color: #6445ff;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+}
