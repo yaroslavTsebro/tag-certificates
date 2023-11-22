@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import Main from "../components/pages/Main/Main";
+import Main, { loadCertificates } from "../components/pages/CertificatesPage/CertificatesPage";
 import Login from "../components/Login/Login";
 import CertificatePage from "../components/pages/CertificatePage/CertificatePage";
-import Layout from "../components/layout/Layout";
+import Layout from "../components/layout/RootLayout";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +12,7 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Main />,
+        loader: loadCertificates,
       },
     ],
   },
