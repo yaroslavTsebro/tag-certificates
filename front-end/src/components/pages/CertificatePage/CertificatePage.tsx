@@ -1,42 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { store } from "../../../main";
-import { GiftCertificate } from "../../../types/gift-certeficates/GiftCertificates";
+import { useRouteLoaderData, Await, defer } from "react-router-dom";
 import GiftCertificateService from "../../../http/service/GiftCertificatesService";
+import Card from "../../common/Card/Card";
+import { GiftCertificate } from "../../../types/gift-certeficates/GiftCertificates";
 
 const CertificatePage = () => {
-  let { id } = useParams();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [certificate, setCertificate] = useState<GiftCertificate>();
+  const certificate = useRouteLoaderData("certificate-detail") as GiftCertificate;
 
-  useEffect(() => {
-    (async () => {
-      await getGiftCertificateById();
-    })();
-    setIsLoading(false);
-  }, []);
-
-  async function getGiftCertificateById() {
-    try {
-      const response = await GiftCertificateService.getById(id);
-      console.log(response);
-      setCertificate(response.data);
-    } catch (e) {
-      console.log(e);
-    }
-  }
   return (
-    <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div>
-          <div>{certificate.id}</div>
-          <div>{certificate.code}</div>
-        </div>
-      )}
-    </div>
+    <Await resolve={certificate}>
+      {(loadedEvent) => <Card certificate={loadedEvent} />}
+    </Await>
   );
 };
 
 export default CertificatePage;
+
+export async function loadCertificate(id: string) {
+  return (await GiftCertificateService.getById(id)).data;
+}
+
+export async function loader({ params }) {
+  const id = params.eventId;
+
+  return defer({
+    certificate: await loadCertificate(id),
+  });
+}
