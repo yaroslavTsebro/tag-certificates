@@ -2,9 +2,8 @@ import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import "./style/style.scss";
 import Store from "./context/UserStore.ts";
-import { router } from "./routing/index.tsx";
-import { RouterProvider } from "react-router-dom";
 import GiftCertificateStore from "./context/CertificatesStore.ts";
+import App from "./App.tsx";
 
 interface State {
   user: Store;
@@ -27,7 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         certificates,
       }}
     >
-      <RouterProvider router={router} />
+      <App />
     </Context.Provider>
   </React.StrictMode>
 );
