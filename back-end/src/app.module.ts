@@ -30,6 +30,8 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
         JWT_ACCESS_EXPIRATION: Joi.string().required(),
         JWT_REFRESH_EXPIRATION: Joi.string().required(),
         PORT: Joi.number().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

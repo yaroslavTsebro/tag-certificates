@@ -16,10 +16,12 @@ import {
   USER_SERVICE,
 } from '../user/service/users-service.interface';
 import { ChangeUsernameDto } from '../user/entity/dto/change-username.dto';
-import User from '../user/entity/user.entity';
+import User, { AuthType } from '../user/entity/user.entity';
 import { AccessTokenPayload } from '../entity/access-token-payload.interface';
 import { RefreshTokenPayload } from '../entity/refresh-token-payload.interface';
 import { CreateUserDto } from '../user/entity/dto/create-user.dto';
+import { GoogleProfileDto } from '../user/entity/dto/oauth/google-profile.dto';
+import { NoUserDataException } from '@app/common';
 
 export type Tokens = { accessToken: string; refreshToken: string };
 
@@ -131,6 +133,34 @@ export class AuthService {
     try {
       const token = this.tokenService.getByUserIdAndToken(id, refreshToken);
       return (await token).user;
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw e;
+      }
+      throw new InternalServerErrorException(`Cant get user by token`);
+    }
+  }
+
+  async registerOrAuthUsingOauth(
+    authType: AuthType,
+    profile: GoogleProfileDto | null,
+  ): Promise<{ user: User; tokens: Tokens }> {
+    try {
+      if (!profile)
+        throw new NoUserDataException(
+          'Data wasn`t found from google oauth provider',
+        );
+
+      let user = await this.usersService.getUserByAuthTypeAndClientId(
+        authType,
+        profile.clientId,
+      );
+      if (!user) {
+        user = await this.usersService.createFromOauth(authType, profile);
+      }
+
+      const tokens = await this.getTokens(user);
+      return { user, tokens };
     } catch (e) {
       if (e instanceof NotFoundException) {
         throw e;

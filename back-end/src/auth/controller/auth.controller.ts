@@ -57,7 +57,7 @@ export class AuthController {
     @CurrentUser() user: User,
   ) {
     await this.authService.logout(user);
-    this.removeTokensToCookies(response);
+    this.removeTokensFromCookies(response);
     user.token = null;
     return user;
   }
@@ -142,7 +142,7 @@ export class AuthController {
     this.addRefreshTokenToCookies(response, tokens.refreshToken);
   }
 
-  private removeTokensToCookies(response: Response) {
+  private removeTokensFromCookies(response: Response) {
     response.clearCookie('Authentication');
     response.clearCookie('refreshToken');
   }

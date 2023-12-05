@@ -9,6 +9,8 @@ import { LoggerModule } from '@app/common';
 import { UsersModule } from './user/user.module';
 import { JwtAccessModule } from './jwt/jwt-access.module';
 import { JwtRefreshModule } from './jwt/jwt-refresh.module';
+import { GoogleStrategy } from './strategy/oauth/google.strategy';
+import { GoogleController } from './controller/google-oauth.controller';
 
 @Module({
   imports: [
@@ -18,12 +20,13 @@ import { JwtRefreshModule } from './jwt/jwt-refresh.module';
     JwtAccessModule,
     JwtRefreshModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, GoogleController],
   providers: [
     AuthService,
     LocalStrategy,
     AccessTokenStrategy,
     RefreshTokenStrategy,
+    GoogleStrategy,
   ],
   exports: [LocalStrategy, AccessTokenStrategy, RefreshTokenStrategy],
 })
