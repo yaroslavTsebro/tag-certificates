@@ -9,6 +9,13 @@ export enum UserRole {
   USER = 'user',
 }
 
+export enum AuthType {
+  EMAIL = 'email',
+  GOOGLE = 'google',
+  GITHUB = 'github',
+  FACEBOOK = 'facebook',
+}
+
 @Entity()
 class User extends PasswordOmitEntity<User> {
   @Column({ length: 20, unique: true })
@@ -17,7 +24,7 @@ class User extends PasswordOmitEntity<User> {
   @Column({ length: 60, unique: true })
   email: string;
 
-  @Column({ length: 200 })
+  @Column({ length: 200, nullable: true })
   password: string;
 
   @Column({
@@ -26,6 +33,18 @@ class User extends PasswordOmitEntity<User> {
     default: UserRole.USER.toString(),
   })
   role: UserRole;
+
+  @Column({
+    type: 'enum',
+    enum: AuthType,
+    default: AuthType.EMAIL.toString(),
+  })
+  authType: AuthType;
+
+  @Column({
+    nullable: true,
+  })
+  oauthId: string;
 
   @JoinColumn()
   token: Token;
